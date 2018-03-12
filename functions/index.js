@@ -3,6 +3,17 @@ const admin = require('firebase-admin');
 const moment = require('moment');
 admin.initializeApp(functions.config().firebase);
 const Nexmo = require('nexmo');
+
+const nexmo = new Nexmo({
+  apiKey: 'b0580eb4',
+  apiSecret: '46872c23e22e7a59',
+  applicationId: '0da7dcd6-8525-4463-8320-7bcabf86e858',
+  privateKey: './private.key',
+
+});
+
+
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
