@@ -83,6 +83,8 @@ exports.open_gate = functions.https.onRequest((request, response) => {
 
                              // all conditions satisfied now make nexmo call
 
+                             
+
 
 
                 	  	}else{
