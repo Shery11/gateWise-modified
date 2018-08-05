@@ -183,11 +183,72 @@ exports.get_status = functions.https.onRequest((request, response) => {
 });
 
 
-// exports.event_url = functions.https.onRequest((request, response) => {
+exports.create_visitor_key = functions.https.onRequest((request, response) => {
+  cors(request, response, () => {
 
 
-//    console.log(request.body);
-//    response.json(request.body.status);
- 
+    console.log(request.body);
+    var community_id = request.body.community_id;
 
-// });
+
+    admin.database().ref('complexes/'+community_id+'/').once("value", (snapShot)=>{
+
+
+      if(snapShot.val() === null){
+
+        response.json({success: false,error: "No such community ID"});
+
+      }else{
+
+      console.log(snapShot.val());
+
+      var bundles = snapShot.val().bundles;
+
+      var gates = [];
+
+      for (var key in bundles) {
+        if (bundles.hasOwnProperty(key)) {
+            console.log(key + " -> " +JSON.stringify(bundles[key]));
+            if(bundles[key].settings){
+            
+              if(bundles[key].settings.isVisitorAccess){
+                console.log("its true");
+                gates.push(bundles[key].gates);
+              }
+            }  
+        }
+      }
+      if(gates.length == 0){
+        response.json({success: false,error: "No visitor keys in this community"});
+      }else{
+        // now save it in firebase with random key
+         
+        
+
+        var timeStamp = {
+          start: moment().unix(),
+          end : moment().unix() + 86400 
+        }
+
+        var pushRef = admin.database().ref('virtualkey/').push({
+          gates: gates,
+          timeUsed: 10,
+          timeStamp: timeStamp
+
+        })
+
+        var key = pushRef.key;
+        console.log(key);
+        response.json({success: true,key:key});
+      }
+     
+
+      }
+
+
+
+    })  
+
+})
+
+});
